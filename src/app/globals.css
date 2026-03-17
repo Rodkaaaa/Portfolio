@@ -114,3 +114,21 @@ body::before {
     transform: translateX(30%);
   }
 }
+.gamepad-btn{
+  background:#0a0a0a;
+  border:2px solid #00ff9f;
+  color:#00ff9f;
+  font-weight:bold;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:6px;
+  box-shadow:0 0 10px rgba(0,255,159,0.5);
+  font-size:18px;
+}
+
+.gamepad-btn:active{
+  transform:scale(0.9);
+}
