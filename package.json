@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@fontsource/press-start-2p": "^5.2.7",
     "next": "16.1.7",
     "react": "19.2.3",

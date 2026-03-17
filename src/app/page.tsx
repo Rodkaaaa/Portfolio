@@ -5,6 +5,8 @@ import RetroStars from "../components/RetroStars";
 import SynthwaveGrid from "../components/SynthwaveGrid";
 import About from "../components/About";
 import { useEffect, useState } from "react";
+import Skills from "../components/Skills";
+import Contact from "../components/Contact";
 
 export default function Home() {
   const [showBack, setShowBack] = useState(false);
@@ -45,19 +47,9 @@ export default function Home() {
 
         <Projects />
 
-        <section
-          id="skills"
-          className="min-h-screen flex items-center justify-center"
-        >
-          <h2 className="text-3xl">SKILLS</h2>
-        </section>
+        <Skills />
 
-        <section
-          id="contact"
-          className="min-h-screen flex items-center justify-center"
-        >
-          <h2 className="text-3xl">CONTACT</h2>
-        </section>
+        <Contact /> 
       </div>
     </main>
   );
