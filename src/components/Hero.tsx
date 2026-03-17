@@ -24,8 +24,8 @@ export default function Hero() {
 
       if (!started && e.key === "Enter") {
         setStarted(true);
-        playSound("/sounds/start.mp3");
-        playSound("/sounds/song.mp3");
+        playSound("/Sounds/start.mp3");
+        playSound("/Sounds/song.mp3");
         return;
       }
       if (e.key === "Escape") {
@@ -42,13 +42,13 @@ export default function Hero() {
       if (started) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
-          playSound("/sounds/down.mp3");
+          playSound("/Sounds/down.mp3");
           setSelected((prev) => (prev + 1) % menuItems.length);
         }
 
         if (e.key === "ArrowUp") {
           e.preventDefault();
-          playSound("/sounds/up.mp3");
+          playSound("/Sounds/up.mp3");
           setSelected((prev) => (prev === 0 ? menuItems.length - 1 : prev - 1));
         }
 
@@ -56,7 +56,7 @@ export default function Hero() {
           const section = document.getElementById(menuItems[selected].target);
 
           if (section) {
-            playSound("/sounds/select.mp3");
+            playSound("/Sounds/select.mp3");
             section.scrollIntoView({
               behavior: "smooth",
               block: "start",
