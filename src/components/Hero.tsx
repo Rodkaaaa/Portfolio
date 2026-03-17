@@ -187,7 +187,14 @@ export default function Hero() {
       window.removeEventListener("touchmove", prevent);
     };
   }, [started, godMode]);
-
+  // 🐍 Bloquear scroll cuando Snake está activo
+  useEffect(() => {
+    if (snakeMode) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = started ? "hidden" : "auto";
+    }
+  }, [snakeMode, started]);
   return (
     <>
       <section
