@@ -34,7 +34,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="min-h-screen flex flex-col items-center justify-center bg-black text-green-400 px-6"
+      className="min-h-screen flex flex-col items-center justify-center text-green-400 px-6"
     >
       <div className="border-4 border-green-400 p-10 max-w-3xl w-full bg-neutral-900">
 

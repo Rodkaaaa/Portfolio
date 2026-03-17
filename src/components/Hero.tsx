@@ -1,6 +1,6 @@
 "use client";
 import DevStats from "./DevStats";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const menuItems = [
   { name: "START GAME", target: "about" },
@@ -14,30 +14,45 @@ const playSound = (src: string) => {
   audio.volume = 0.3;
   audio.play();
 };
+
 export default function Hero() {
   const [started, setStarted] = useState(false);
   const [selected, setSelected] = useState(0);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    musicRef.current = new Audio("/sounds/song.mp3");
+    musicRef.current.volume = 0.2;
+    musicRef.current.loop = true;
+  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.repeat) return;
 
+      const hero = document.getElementById("hero");
+      const heroVisible = hero?.getBoundingClientRect().top === 0;
+
       if (!started && e.key === "Enter") {
         setStarted(true);
         playSound("/Sounds/start.mp3");
-        playSound("/Sounds/song.mp3");
+        musicRef.current?.play();
         return;
       }
-      if (e.key === "Escape") {
-        const hero = document.getElementById("hero");
 
+      // ESC siempre permitido
+      if (e.key === "Escape") {
         if (hero) {
           hero.scrollIntoView({
             behavior: "smooth",
             block: "start",
           });
         }
+        return;
       }
+
+      // 🔒 Bloquear controles si no está en hero
+      if (!heroVisible) return;
 
       if (started) {
         if (e.key === "ArrowDown") {
@@ -71,39 +86,77 @@ export default function Hero() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [started, selected]);
 
+  useEffect(() => {
+    if (!started) return;
+
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    const preventKeys = (e: KeyboardEvent) => {
+      const keys = [
+        "ArrowUp",
+        "ArrowDown",
+        "Space",
+        "PageUp",
+        "PageDown",
+        "Home",
+        "End",
+      ];
+
+      if (keys.includes(e.code)) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    window.addEventListener("keydown", preventKeys);
+
+    return () => {
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
+      window.removeEventListener("keydown", preventKeys);
+    };
+  }, [started]);
+  useEffect(() => {
+    document.body.style.overflow = started ? "hidden" : "auto";
+  }, [started]);
   return (
     <section
       id="hero"
-      className="flex flex-col items-center justify-center min-h-screen text-center bg-black text-green-400 px-6"
+      className="flex flex-col items-center justify-center min-h-screen text-center  text-green-400 px-6"
     >
-      {" "}
-      <h1 className="text-4xl md:text-6xl mb-10 tracking-widest">
-        FREDERICK CID
-      </h1>
-      <h2 className="text-lg md:text-2xl mb-16">SOFTWARE DEVELOPER</h2>
-      <DevStats level={30} xp={80} />
-      {!started && (
-        <p className="text-yellow-300 text-xl press-start">PRESS ENTER</p>
-      )}
-      {started && (
-        <div className="flex flex-col gap-6 text-lg">
-          {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className={`transition ${
-                selected === index
-                  ? "text-white scale-110 translate-x-2"
-                  : "text-green-400"
-              }`}
-            >
-              {selected === index && (
-                <span className="mr-2 arcade-cursor">▶</span>
-              )}{" "}
-              {item.name}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="bg-black border border-green-400 p-8 rounded-md w-full max-w-md">
+        <DevStats level={30} xp={80} />
+
+        {!started && (
+          <p className="text-yellow-300 text-xl press-start mt-6">
+            PRESS ENTER
+          </p>
+        )}
+
+        {started && (
+          <div className="flex flex-col gap-6 text-lg mt-6">
+            {menuItems.map((item, index) => (
+              <div
+                key={index}
+                className={`relative text-center transition ${
+                  selected === index ? "text-white scale-110" : "text-green-400"
+                }`}
+              >
+                {selected === index && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 arcade-cursor">
+                    ▶
+                  </span>
+                )}
+
+                {item.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

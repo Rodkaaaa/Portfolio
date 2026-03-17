@@ -29,7 +29,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="min-h-screen flex flex-col items-center justify-center bg-black text-green-400 px-6"
+      className="min-h-screen flex flex-col items-center justify-center text-green-400 px-6"
     >
       <h2 className="text-3xl mb-12 text-yellow-300">GAME CARTRIDGES</h2>
 
