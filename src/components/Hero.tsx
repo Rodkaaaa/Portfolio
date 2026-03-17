@@ -1,6 +1,9 @@
 "use client";
+
 import DevStats from "./DevStats";
 import { useEffect, useState, useRef } from "react";
+import { CheatSystem } from "../utils/cheatSystem";
+import SnakeGame from "./SnakeGame";
 
 const baseMenuItems = [
   { name: "START GAME", target: "about" },
@@ -9,7 +12,6 @@ const baseMenuItems = [
   { name: "CONTACT", target: "contact" },
 ];
 
-// 🎮 Konami Code
 const konamiCode = [
   "ArrowUp",
   "ArrowUp",
@@ -32,9 +34,16 @@ const playSound = (src: string) => {
 export default function Hero() {
   const [started, setStarted] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [konamiIndex, setKonamiIndex] = useState(0);
-  const [secretUnlocked, setSecretUnlocked] = useState(false);
+  const [snakeMode, setSnakeMode] = useState(false);
 
+  const [secretUnlocked, setSecretUnlocked] = useState(false);
+  const [godMode, setGodMode] = useState(false);
+  const [maxStats, setMaxStats] = useState(false);
+  const [bloodMode, setBloodMode] = useState(false);
+
+  const [konamiIndex, setKonamiIndex] = useState(0);
+
+  const cheatRef = useRef<CheatSystem | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
 
   // 🎵 Música
@@ -44,7 +53,47 @@ export default function Hero() {
     musicRef.current.loop = true;
   }, []);
 
-  // 📜 Menú dinámico
+  // 🎮 Cheat Engine
+  useEffect(() => {
+    cheatRef.current = new CheatSystem([
+      {
+        code: "IDDQD",
+        action: () => {
+          setGodMode(true);
+          playSound("/Sounds/start.mp3");
+        },
+      },
+      {
+        code: "MOTHERLODE",
+        action: () => {
+          setMaxStats(true);
+          playSound("/Sounds/start.mp3");
+        },
+      },
+      {
+        code: "IDKFA",
+        action: () => {
+          setSecretUnlocked(true);
+          setMaxStats(true);
+          playSound("/Sounds/start.mp3");
+        },
+      },
+      {
+        code: "ABACABB",
+        action: () => {
+          setBloodMode(true);
+          playSound("/Sounds/start.mp3");
+        },
+      },
+      {
+        code: "SNAKE",
+        action: () => {
+          setSnakeMode(true);
+        },
+      },
+    ]);
+  }, []);
+
   const menuItems = secretUnlocked
     ? [...baseMenuItems, { name: "TRUST ME", target: "secret" }]
     : baseMenuItems;
@@ -53,10 +102,12 @@ export default function Hero() {
     const handleKey = (e: KeyboardEvent) => {
       if (e.repeat) return;
 
+      cheatRef.current?.handleKey(e.key);
+
       const hero = document.getElementById("hero");
       const heroVisible = hero?.getBoundingClientRect().top === 0;
 
-      // 🎮 KONAMI CODE DETECTION
+      // 🎮 KONAMI
       if (e.code === konamiCode[konamiIndex]) {
         const nextIndex = konamiIndex + 1;
         setKonamiIndex(nextIndex);
@@ -70,7 +121,6 @@ export default function Hero() {
         setKonamiIndex(0);
       }
 
-      // ▶ START
       if (!started && e.key === "Enter") {
         setStarted(true);
         playSound("/Sounds/start.mp3");
@@ -78,18 +128,11 @@ export default function Hero() {
         return;
       }
 
-      // ⏹ ESC vuelve arriba
       if (e.key === "Escape") {
-        if (hero) {
-          hero.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
+        hero?.scrollIntoView({ behavior: "smooth" });
         return;
       }
 
-      // 🔒 Bloqueo si no está visible
       if (!heroVisible) return;
 
       if (started) {
@@ -107,100 +150,75 @@ export default function Hero() {
           );
         }
 
-        // 🎯 ENTER
         if (e.code === "Enter") {
           const selectedItem = menuItems[selected];
 
-          // 🔓 SECRETO
           if (selectedItem.target === "secret") {
-            playSound("/Sounds/desbloqueo.mp3");
             window.open("https://matias.me/nsfw/", "_blank");
             return;
           }
 
           const section = document.getElementById(selectedItem.target);
 
-          if (section) {
-            playSound("/Sounds/select.mp3");
-            section.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
+          section?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }
     };
 
     window.addEventListener("keydown", handleKey);
+
     return () => window.removeEventListener("keydown", handleKey);
   }, [started, selected, konamiIndex, menuItems]);
 
-  // 🚫 Bloquear scroll
+  // 🚫 Scroll lock
   useEffect(() => {
-    if (!started) return;
+    if (!started || godMode) return;
 
-    const preventScroll = (e: Event) => e.preventDefault();
+    const prevent = (e: Event) => e.preventDefault();
 
-    const preventKeys = (e: KeyboardEvent) => {
-      const keys = [
-        "ArrowUp",
-        "ArrowDown",
-        "Space",
-        "PageUp",
-        "PageDown",
-        "Home",
-        "End",
-      ];
-
-      if (keys.includes(e.code)) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("wheel", preventScroll, { passive: false });
-    window.addEventListener("touchmove", preventScroll, { passive: false });
-    window.addEventListener("keydown", preventKeys);
+    window.addEventListener("wheel", prevent, { passive: false });
+    window.addEventListener("touchmove", prevent, { passive: false });
 
     return () => {
-      window.removeEventListener("wheel", preventScroll);
-      window.removeEventListener("touchmove", preventScroll);
-      window.removeEventListener("keydown", preventKeys);
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
     };
-  }, [started]);
-
-  // 🔒 overflow
-  useEffect(() => {
-    document.body.style.overflow = started ? "hidden" : "auto";
-  }, [started]);
+  }, [started, godMode]);
 
   return (
-    <section
-      id="hero"
-      className="flex flex-col items-center justify-center min-h-screen text-center text-green-400 px-6"
-    >
-      <div className="bg-black border border-green-400 p-8 rounded-md w-full max-w-md">
-        <DevStats level={30} xp={80} />
+    <>
+      <section
+        id="hero"
+        className={`flex flex-col items-center justify-center min-h-screen text-center px-6
+      ${bloodMode ? "text-red-500" : "text-green-400"}`}
+      >
+        <div
+          className={`border p-8 rounded-md w-full max-w-md
+        ${bloodMode ? "border-red-500 bg-black" : "border-green-400 bg-black"}`}
+        >
+          <DevStats level={maxStats ? 99 : 30} xp={maxStats ? 999 : 80} />
 
-        {!started && (
-          <p className="text-yellow-300 text-xl press-start mt-6">
-            PRESS ENTER
-          </p>
-        )}
+          {!started && (
+            <p className="text-yellow-300 text-xl press-start mt-6">
+              PRESS ENTER
+            </p>
+          )}
 
-        {started && (
-          <>
+          {started && (
             <div className="flex flex-col gap-6 text-lg mt-6">
               {menuItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`relative text-center transition ${
-                    selected === index
-                      ? "text-white scale-110"
-                      : "text-green-400"
-                  }`}
+                  className={`relative text-center transition ${selected === index
+                    ? "text-white scale-110"
+                    : "text-green-400"
+                    }`}
                 >
                   {selected === index && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 arcade-cursor">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2">
                       ▶
                     </span>
                   )}
@@ -209,16 +227,21 @@ export default function Hero() {
                 </div>
               ))}
             </div>
+          )}
 
-            {/* 🔓 Cheat message */}
-            {secretUnlocked && (
-              <p className="text-pink-400 mt-4 animate-pulse">
-                🔓 CHEAT UNLOCKED
-              </p>
-            )}
-          </>
-        )}
-      </div>
-    </section>
+          {godMode && (
+            <p className="text-yellow-400 mt-4 animate-pulse">GOD MODE</p>
+          )}
+
+          {bloodMode && (
+            <p className="text-red-500 mt-4 animate-pulse">FATALITY MODE</p>
+          )}
+        </div>
+      </section>
+      {/* 🎮 MINI JUEGO */}
+      {snakeMode && (
+        <SnakeGame onClose={() => setSnakeMode(false)} />
+      )}
+    </>
   );
 }
