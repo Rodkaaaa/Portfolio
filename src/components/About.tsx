@@ -1,0 +1,92 @@
+"use client";
+
+export default function About() {
+  return (
+
+      <section
+        id="about"
+        className="min-h-screen flex items-center justify-center  text-green-400 px-6 pt-2"
+      >
+        <div className="border-4 border-green-400 p-10 max-w-5xl w-full bg-neutral-900 grid md:grid-cols-2 gap-10 items-center">
+          {/* personaje */}
+          <div className="flex justify-center">
+            {/* SVG PLAYER */}
+            {/* pega aquí el svg anterior */}
+            <div className="flex justify-center">
+              <svg
+                width="260"
+                height="260"
+                viewBox="0 0 80 90"
+                xmlns="http://www.w3.org/2000/svg"
+                shapeRendering="crispEdges"
+              >
+                <rect x="28" y="4" width="24" height="8" fill="#111" />
+                <rect x="24" y="8" width="32" height="8" fill="#111" />
+
+                <rect x="28" y="12" width="24" height="16" fill="#f1c27d" />
+
+                <rect x="32" y="18" width="4" height="4" fill="#000" />
+                <rect x="44" y="18" width="4" height="4" fill="#000" />
+
+                <rect x="36" y="28" width="8" height="4" fill="#f1c27d" />
+
+                <rect x="28" y="32" width="24" height="20" fill="#111" />
+                <rect x="20" y="32" width="8" height="16" fill="#111" />
+                <rect x="52" y="32" width="8" height="16" fill="#111" />
+
+                <rect x="28" y="52" width="10" height="20" fill="#2d6cdf" />
+                <rect x="42" y="52" width="10" height="20" fill="#2d6cdf" />
+
+                <rect x="28" y="72" width="10" height="6" fill="#222" />
+                <rect x="42" y="72" width="10" height="6" fill="#222" />
+              </svg>
+            </div>
+          </div>
+
+          {/* ficha personaje */}
+
+          <div className="space-y-4 text-left">
+            <h2 className="text-3xl text-yellow-300">PLAYER PROFILE</h2>
+
+            <p>
+              <span className="text-white">Name:</span> Frederick Cid
+            </p>
+            <p>
+              <span className="text-white">Class:</span> Software Developer
+            </p>
+            <p>
+              <span className="text-white">Level:</span> 30
+            </p>
+
+            <div className="pt-4 space-y-2">
+              <p className="text-white">HP</p>
+              <div className="bg-neutral-700 h-3 w-full">
+                <div className="bg-red-500 h-3 w-[85%]" />
+              </div>
+
+              <p className="text-white">MP</p>
+              <div className="bg-neutral-700 h-3 w-full">
+                <div className="bg-blue-500 h-3 w-[60%]" />
+              </div>
+
+              <p className="text-white">EXP</p>
+              <div className="bg-neutral-700 h-3 w-full">
+                <div className="bg-yellow-400 h-3 w-[75%]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 pt-4 text-sm">
+              <div>STR: 18</div>
+              <div>INT: 16</div>
+              <div>AGI: 14</div>
+            </div>
+
+            <p className="text-green-300 text-sm pt-4">
+              Developer specialized in building enterprise systems, integrations
+              and scalable applications using modern .NET technologies.
+            </p>
+          </div>
+        </div>
+      </section>
+  );
+}
