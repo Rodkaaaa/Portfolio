@@ -21,7 +21,7 @@ export default function Hero() {
   const musicRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    musicRef.current = new Audio("/sounds/song.mp3");
+    musicRef.current = new Audio("/Sounds/song.mp3");
     musicRef.current.volume = 0.2;
     musicRef.current.loop = true;
   }, []);
