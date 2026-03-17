@@ -19,36 +19,46 @@ export default function MobileGamepad({
   onB,
   onStart
 }: Props) {
+
+  const press = (fn?: () => void) => (e: React.TouchEvent) => {
+    e.preventDefault();
+    fn?.();
+  };
+
   return (
-    <div className="fixed bottom-6 left-0 right-0 flex justify-between px-6 z-50 md:hidden select-none">
+    <div className="fixed bottom-4 left-0 right-0 flex justify-between px-4 z-50 md:hidden select-none">
 
       {/* D PAD */}
-      <div className="relative w-32 h-32">
+      <div className="relative w-24 h-24 sm:w-28 sm:h-28">
 
+        {/* UP */}
         <button
-          onTouchStart={onUp}
-          className="absolute top-0 left-1/2 -translate-x-1/2 gamepad-btn"
+          onTouchStart={press(onUp)}
+          className="absolute top-0 left-1/2 -translate-x-1/2 gamepad-btn w-10 h-10 sm:w-12 sm:h-12"
         >
           ▲
         </button>
 
+        {/* LEFT */}
         <button
-          onTouchStart={onLeft}
-          className="absolute left-0 top-1/2 -translate-y-1/2 gamepad-btn"
+          onTouchStart={press(onLeft)}
+          className="absolute left-0 top-1/2 -translate-y-1/2 gamepad-btn w-10 h-10 sm:w-12 sm:h-12"
         >
           ◀
         </button>
 
+        {/* RIGHT */}
         <button
-          onTouchStart={onRight}
-          className="absolute right-0 top-1/2 -translate-y-1/2 gamepad-btn"
+          onTouchStart={press(onRight)}
+          className="absolute right-0 top-1/2 -translate-y-1/2 gamepad-btn w-10 h-10 sm:w-12 sm:h-12"
         >
           ▶
         </button>
 
+        {/* DOWN */}
         <button
-          onTouchStart={onDown}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 gamepad-btn"
+          onTouchStart={press(onDown)}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 gamepad-btn w-10 h-10 sm:w-12 sm:h-12"
         >
           ▼
         </button>
@@ -60,23 +70,23 @@ export default function MobileGamepad({
 
         <div className="flex gap-6">
           <button
-            onTouchStart={onB}
-            className="gamepad-btn rounded-full w-14 h-14"
+            onTouchStart={press(onB)}
+            className="gamepad-btn rounded-full w-12 h-12 sm:w-14 sm:h-14"
           >
             B
           </button>
 
           <button
-            onTouchStart={onA}
-            className="gamepad-btn rounded-full w-16 h-16"
+            onTouchStart={press(onA)}
+            className="gamepad-btn rounded-full w-12 h-12 sm:w-14 sm:h-14"
           >
             A
           </button>
         </div>
 
-        {/* START BUTTON */}
+        {/* START */}
         <button
-          onTouchStart={onStart}
+          onTouchStart={press(onStart)}
           className="bg-black border border-green-400 text-green-400 text-xs px-6 py-2 rounded shadow-md active:scale-95"
         >
           START
