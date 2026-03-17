@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export default function SynthwaveGrid() {
+export default function Fireflies() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -18,37 +18,34 @@ export default function SynthwaveGrid() {
     canvas.width = width;
     canvas.height = height;
 
-    let offset = 0;
+    const fireflies = Array.from({ length: 40 }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: (Math.random() - 0.5) * 0.3,
+      glow: Math.random() * 0.5 + 0.5,
+    }));
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      ctx.strokeStyle = "#ff00ff";
-      ctx.lineWidth = 1;
-
-      const gridSize = 40;
-
-      offset += 0.5;
-
-      if (offset > gridSize) offset = 0;
-
-      // líneas horizontales
-      for (let y = height / 2; y < height; y += gridSize) {
+      fireflies.forEach((f) => {
         ctx.beginPath();
-        ctx.moveTo(0, y + offset);
-        ctx.lineTo(width, y + offset);
-        ctx.stroke();
-      }
+        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(150,255,180,${f.glow})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#9affc5";
+        ctx.fill();
 
-      // líneas verticales con perspectiva
-      const centerX = width / 2;
+        f.x += f.speedX;
+        f.y += f.speedY;
 
-      for (let i = -20; i <= 20; i++) {
-        ctx.beginPath();
-        ctx.moveTo(centerX, height / 2);
-        ctx.lineTo(centerX + i * gridSize, height);
-        ctx.stroke();
-      }
+        if (f.x < 0) f.x = width;
+        if (f.x > width) f.x = 0;
+        if (f.y < 0) f.y = height;
+        if (f.y > height) f.y = 0;
+      });
 
       requestAnimationFrame(animate);
     };
@@ -58,7 +55,6 @@ export default function SynthwaveGrid() {
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-
       canvas.width = width;
       canvas.height = height;
     };
@@ -71,7 +67,7 @@ export default function SynthwaveGrid() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed bottom-0 left-0 w-full h-full pointer-events-none z-0 opacity-40"
+      className="fixed inset-0 pointer-events-none z-[2]"
     />
   );
 }
