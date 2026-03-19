@@ -63,3 +63,72 @@ body::before {
 .arcade-cursor {
   animation: blink 1s infinite;
 }
+.fog-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.fog {
+  background: radial-gradient(
+    circle at center,
+    rgba(255,255,255,0.08),
+    transparent 70%
+  );
+}
+.fog {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  opacity: 0.35;
+  filter: blur(80px);
+
+  background: radial-gradient(
+    circle,
+    rgba(180,255,220,0.35) 0%,
+    rgba(120,255,200,0.15) 40%,
+    transparent 70%
+  );
+
+  animation: fogMove linear infinite;
+}
+
+.fog1 {
+  top: -30%;
+  left: -50%;
+  animation-duration: 60s;
+}
+
+.fog2 {
+  top: -20%;
+  left: -40%;
+  animation-duration: 90s;
+}
+
+@keyframes fogMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(30%);
+  }
+}
+.gamepad-btn{
+  background:#0a0a0a;
+  border:2px solid #00ff9f;
+  color:#00ff9f;
+  font-weight:bold;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:6px;
+  box-shadow:0 0 10px rgba(0,255,159,0.5);
+  font-size:18px;
+}
+
+.gamepad-btn:active{
+  transform:scale(0.9);
+}

@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "Portafolio Frederick",
   description: "Sapo",
 };
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export default function RootLayout({
   children,
