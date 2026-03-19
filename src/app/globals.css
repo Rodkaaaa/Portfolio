@@ -23,7 +23,6 @@ body {
   background: black;
   color: #00ff9f;
   font-family: "Press Start 2P", cursive;
-  cursor: url("/cursor-pixel.png"), auto;
 }
 
 /* efecto scanlines retro */
