@@ -2,26 +2,28 @@
 
 const projects = [
   {
-    name: "PREPACKING SYSTEM",
+    name: "ENTERPRISE BACKEND PLATFORM",
     description:
-      "Sistema de gestión de pre-packing desarrollado con Blazor y MudBlazor.",
-    stack: "Blazor / MudBlazor / .NET",
+      "Scalable enterprise backend built with .NET using layered architecture, handling business logic, services, and system integrations.",
+    stack: ".NET / C# / REST API / SQL",
   },
   {
-    name: "EXCEL MASS IMPORT",
+    name: "JUMPSELLER ECOMMERCE INTEGRATION",
     description:
-      "Herramienta de carga masiva de artículos desde Excel con validaciones.",
-    stack: "Blazor / ClosedXML / API",
+      "Ecommerce integration platform that synchronizes products, orders, and inventory between enterprise systems and Jumpseller.",
+    stack: ".NET / REST API / JSON",
   },
   {
-    name: "API INTEGRATIONS",
-    description: "Servicios backend para integración de plataformas externas.",
-    stack: ".NET / REST API",
+    name: "ERP SALES & DOCUMENT MANAGEMENT",
+    description:
+      "Enterprise module for managing clients, sales, and documents with business validations, tax calculations, and transactional workflows.",
+    stack: "Blazor / MudBlazor / .NET / SQL Server",
   },
   {
-    name: "ERP MODULE",
-    description: "Módulo empresarial para gestión de productos y clientes.",
-    stack: "Blazor / SQL Server",
+    name: "YOUTUBE DOWNLOADER ENGINE",
+    description:
+      "Media processing service that retrieves and downloads video content from URLs, delivering processed files through backend logic.",
+    stack: ".NET / HTTP / Media Processing",
   },
 ];
 
