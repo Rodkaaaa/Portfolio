@@ -1,7 +1,7 @@
 "use client";
 
 import DevStats from "./DevStats";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo} from "react";
 import { CheatSystem } from "../utils/cheatSystem";
 import SnakeGame from "./SnakeGame";
 
@@ -94,9 +94,9 @@ export default function Hero() {
     ]);
   }, []);
 
-  const menuItems = secretUnlocked
+  const menuItems = useMemo(() => secretUnlocked
     ? [...baseMenuItems, { name: "TRUST ME", target: "secret" }]
-    : baseMenuItems;
+    : baseMenuItems, [secretUnlocked]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -145,9 +145,7 @@ export default function Hero() {
         if (e.key === "ArrowUp") {
           e.preventDefault();
           playSound("/Sounds/up.mp3");
-          setSelected((prev) =>
-            prev === 0 ? menuItems.length - 1 : prev - 1
-          );
+          setSelected((prev) => (prev === 0 ? menuItems.length - 1 : prev - 1));
         }
 
         if (e.code === "Enter") {
@@ -219,10 +217,11 @@ export default function Hero() {
               {menuItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`relative text-center transition ${selected === index
-                    ? "text-white scale-110"
-                    : "text-green-400"
-                    }`}
+                  className={`relative text-center transition ${
+                    selected === index
+                      ? "text-white scale-110"
+                      : "text-green-400"
+                  }`}
                 >
                   {selected === index && (
                     <span className="absolute left-0 top-1/2 -translate-y-1/2">
@@ -246,9 +245,7 @@ export default function Hero() {
         </div>
       </section>
       {/* 🎮 MINI JUEGO */}
-      {snakeMode && (
-        <SnakeGame onClose={() => setSnakeMode(false)} />
-      )}
+      {snakeMode && <SnakeGame onClose={() => setSnakeMode(false)} />}
     </>
   );
 }
