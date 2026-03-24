@@ -1,7 +1,7 @@
 "use client";
 
 import DevStats from "./DevStats";
-import { useEffect, useState, useRef, useMemo} from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { CheatSystem } from "../utils/cheatSystem";
 import SnakeGame from "./SnakeGame";
 
@@ -32,6 +32,9 @@ const playSound = (src: string) => {
 };
 
 export default function Hero() {
+  const [showUnlock, setShowUnlock] = useState(false);
+  const [unlockText, setUnlockText] = useState("");
+
   const [started, setStarted] = useState(false);
   const [selected, setSelected] = useState(0);
   const [snakeMode, setSnakeMode] = useState(false);
@@ -45,6 +48,17 @@ export default function Hero() {
 
   const cheatRef = useRef<CheatSystem | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
+
+  const triggerUnlock = (text: string) => {
+    setUnlockText(text);
+    setShowUnlock(true);
+
+    playSound("/Sounds/start.mp3");
+
+    setTimeout(() => {
+      setShowUnlock(false);
+    }, 2000);
+  };
 
   // 🎵 Música
   useEffect(() => {
@@ -60,14 +74,14 @@ export default function Hero() {
         code: "IDDQD",
         action: () => {
           setGodMode(true);
-          playSound("/Sounds/start.mp3");
+          triggerUnlock("GOD MODE");
         },
       },
       {
         code: "MOTHERLODE",
         action: () => {
           setMaxStats(true);
-          playSound("/Sounds/start.mp3");
+          triggerUnlock("MAX STATS");
         },
       },
       {
@@ -75,28 +89,33 @@ export default function Hero() {
         action: () => {
           setSecretUnlocked(true);
           setMaxStats(true);
-          playSound("/Sounds/start.mp3");
+          triggerUnlock("ALL UNLOCKED");
         },
       },
       {
         code: "ABACABB",
         action: () => {
           setBloodMode(true);
-          playSound("/Sounds/start.mp3");
+          triggerUnlock("FATALITY MODE");
         },
       },
       {
         code: "SNAKE",
         action: () => {
           setSnakeMode(true);
+          triggerUnlock("SNAKE GAME");
         },
       },
     ]);
   }, []);
 
-  const menuItems = useMemo(() => secretUnlocked
-    ? [...baseMenuItems, { name: "TRUST ME", target: "secret" }]
-    : baseMenuItems, [secretUnlocked]);
+  const menuItems = useMemo(
+    () =>
+      secretUnlocked
+        ? [...baseMenuItems, { name: "TRUST ME", target: "secret" }]
+        : baseMenuItems,
+    [secretUnlocked],
+  );
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -116,6 +135,7 @@ export default function Hero() {
           setSecretUnlocked(true);
           setKonamiIndex(0);
           playSound("/Sounds/start.mp3");
+          triggerUnlock("KONAMI CODE"); // 👈 ESTE FALTABA
         }
       } else {
         setKonamiIndex(0);
@@ -170,29 +190,34 @@ export default function Hero() {
 
     return () => window.removeEventListener("keydown", handleKey);
   }, [started, selected, konamiIndex, menuItems]);
-
-  // 🚫 Scroll lock
   useEffect(() => {
-    if (!started || godMode) return;
-
     const prevent = (e: Event) => e.preventDefault();
 
-    window.addEventListener("wheel", prevent, { passive: false });
-    window.addEventListener("touchmove", prevent, { passive: false });
+    const shouldBlockScroll = snakeMode || !started || !godMode;
+
+    if (shouldBlockScroll) {
+      // 🔒 bloqueo visual
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+
+      // 🔒 bloqueo real
+      window.addEventListener("wheel", prevent, { passive: false });
+      window.addEventListener("touchmove", prevent, { passive: false });
+    } else {
+      // 🔓 liberar scroll
+      document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
+
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
+    }
 
     return () => {
       window.removeEventListener("wheel", prevent);
       window.removeEventListener("touchmove", prevent);
     };
-  }, [started, godMode]);
-  // 🐍 Bloquear scroll cuando Snake está activo
-  useEffect(() => {
-    if (snakeMode) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = started ? "hidden" : "auto";
-    }
-  }, [snakeMode, started]);
+  }, [started, godMode, snakeMode]);
+
   return (
     <>
       <section
@@ -224,7 +249,7 @@ export default function Hero() {
                   }`}
                 >
                   {selected === index && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 arcade-cursor" >
                       ▶
                     </span>
                   )}
@@ -241,6 +266,20 @@ export default function Hero() {
 
           {bloodMode && (
             <p className="text-red-500 mt-4 animate-pulse">FATALITY MODE</p>
+          )}
+
+          {showUnlock && (
+            <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+              <div className="bg-black border border-green-400 px-8 py-4 rounded-lg animate-fade-in-out shadow-lg">
+                <p className="text-green-400 text-xl tracking-widest">
+                  <span className="animate-pulse">🔓</span> CODE UNLOCKED
+                </p>
+
+                <p className="text-white text-lg mt-2 text-center">
+                  {unlockText}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </section>
